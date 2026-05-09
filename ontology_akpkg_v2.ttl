@@ -1,0 +1,440 @@
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix akp:     <http://www.akpkg.org/ontology#> .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Ontology Declaration — Version 2.0
+# Changes from v1.0:
+#   - versionInfo updated to 2.0
+#   - foaf:Person alignment added to akp:Author (owl:equivalentClass)
+#   - skos:Concept alignment added to akp:Keyword
+#   - rdfs:comment annotations added to ALL object properties (Widoco support)
+#   - akp:abstract data property added to akp:Publication
+#   - collaboratesWith formally declared owl:SymmetricProperty (was already, now explicit)
+#   - ABox: 2 new citation edges added (paper_llm_survey → paper_bert, paper_attention)
+#   - ABox: abstract literals filled in for all 8 papers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+<http://www.akpkg.org/ontology>
+    rdf:type owl:Ontology ;
+    rdfs:label "Academic Publication Knowledge Graph Ontology" ;
+    rdfs:comment "An OWL 2 DL ontology for modeling academic publications, authors, citation networks, research institutions, research fields, and keywords. Developed as part of the Knowledge Engineering and Ontologies course project (Topic 7)." ;
+    owl:versionInfo "2.0" ;
+    dcterms:created "2026-04-25" ;
+    dcterms:modified "2026-05-09" ;
+    dcterms:creator "Academic KG Project Team" .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TBox — Classes
+# ═══════════════════════════════════════════════════════════════════════════════
+
+akp:Publication rdf:type owl:Class ;
+    rdfs:label "Publication" ;
+    rdfs:comment "An academic publication of any type (journal article, conference paper, etc.)." .
+
+akp:Paper rdf:type owl:Class ;
+    rdfs:subClassOf akp:Publication ;
+    rdfs:label "Paper" ;
+    rdfs:comment "A standalone research paper that can be published in a journal or presented at a conference." .
+
+akp:JournalArticle rdf:type owl:Class ;
+    rdfs:subClassOf akp:Paper ;
+    rdfs:label "Journal Article" ;
+    rdfs:comment "A peer-reviewed paper published in an academic journal." .
+
+akp:ConferencePaper rdf:type owl:Class ;
+    rdfs:subClassOf akp:Paper ;
+    rdfs:label "Conference Paper" ;
+    rdfs:comment "A paper presented and published in the proceedings of an academic conference or workshop." .
+
+# [v2] Author aligned with foaf:Person for interoperability
+akp:Author rdf:type owl:Class ;
+    rdfs:label "Author" ;
+    rdfs:comment "A researcher or scholar who has authored one or more academic publications." ;
+    owl:equivalentClass foaf:Person .
+
+akp:Institution rdf:type owl:Class ;
+    rdfs:label "Institution" ;
+    rdfs:comment "A university, research laboratory, or other organization with which an author is affiliated." .
+
+akp:Venue rdf:type owl:Class ;
+    rdfs:label "Venue" ;
+    rdfs:comment "An abstract publication outlet. Specialized into Journal and Conference." .
+
+akp:Journal rdf:type owl:Class ;
+    rdfs:subClassOf akp:Venue ;
+    rdfs:label "Journal" ;
+    rdfs:comment "A peer-reviewed periodic academic publication with an associated impact factor." .
+
+akp:Conference rdf:type owl:Class ;
+    rdfs:subClassOf akp:Venue ;
+    rdfs:label "Conference" ;
+    rdfs:comment "An academic conference or workshop at which research papers are presented." .
+
+akp:ResearchField rdf:type owl:Class ;
+    rdfs:label "Research Field" ;
+    rdfs:comment "A broad scientific or engineering research domain (e.g., Machine Learning, NLP)." .
+
+# [v2] Keyword aligned with skos:Concept for future taxonomy support
+akp:Keyword rdf:type owl:Class ;
+    rdfs:label "Keyword" ;
+    rdfs:comment "A thematic descriptor assigned to a publication. Aligned with skos:Concept to support future hierarchical keyword taxonomies." ;
+    owl:equivalentClass skos:Concept .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TBox — Object Properties
+# [v2] rdfs:comment added to ALL object properties for Widoco documentation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+akp:hasAuthor rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  akp:Author ;
+    rdfs:label  "has author" ;
+    rdfs:comment "Links a publication to one or more of its authors." .
+
+akp:affiliatedWith rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Author ;
+    rdfs:range  akp:Institution ;
+    rdfs:label  "affiliated with" ;
+    rdfs:comment "Indicates the institution or organization with which an author is affiliated at the time of publication." .
+
+akp:publishedIn rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  akp:Venue ;
+    rdfs:label  "published in" ;
+    rdfs:comment "Specifies the venue (journal or conference) in which a publication appeared." .
+
+akp:cites rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  akp:Publication ;
+    rdfs:label  "cites" ;
+    rdfs:comment "Represents a direct citation relationship: the subject publication references the object publication in its bibliography." .
+
+akp:hasKeyword rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  akp:Keyword ;
+    rdfs:label  "has keyword" ;
+    rdfs:comment "Associates a publication with one or more thematic keywords that describe its content." .
+
+akp:belongsToField rdf:type owl:ObjectProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  akp:ResearchField ;
+    rdfs:label  "belongs to field" ;
+    rdfs:comment "Indicates the broad research domain to which a publication belongs." .
+
+# [v2] owl:SymmetricProperty explicitly declared (infers both directions)
+akp:collaboratesWith rdf:type owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain akp:Author ;
+    rdfs:range  akp:Author ;
+    rdfs:label  "collaborates with" ;
+    rdfs:comment "A symmetric property indicating that two authors have co-authored at least one publication together. If A collaboratesWith B, the reasoner infers B collaboratesWith A." .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TBox — Data Properties
+# ═══════════════════════════════════════════════════════════════════════════════
+
+akp:title rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "title" ;
+    rdfs:comment "The full title of the publication." .
+
+akp:year rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  xsd:integer ;
+    rdfs:label  "year" ;
+    rdfs:comment "The calendar year in which the publication was published." .
+
+akp:doi rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "DOI" ;
+    rdfs:comment "The Digital Object Identifier of the publication, following the format 10.XXXX/suffix." .
+
+# [v2] abstract was already in v1 ABox — now formally declared with comment
+akp:abstract rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "abstract" ;
+    rdfs:comment "The abstract text of the publication. Used for keyword extraction and semantic search pipelines." .
+
+akp:citationCount rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Publication ;
+    rdfs:range  xsd:integer ;
+    rdfs:label  "citation count" ;
+    rdfs:comment "The number of times this publication has been cited by other works, as recorded on Semantic Scholar (snapshot: 2024-01-01)." .
+
+akp:name rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Author ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "name" ;
+    rdfs:comment "The full canonical name of the author (e.g., 'Yann LeCun')." .
+
+akp:orcid rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Author ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "ORCID" ;
+    rdfs:comment "The ORCID identifier of the author in the format XXXX-XXXX-XXXX-XXXX." .
+
+akp:hIndex rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Author ;
+    rdfs:range  xsd:integer ;
+    rdfs:label  "h-index" ;
+    rdfs:comment "The h-index of the author, a bibliometric measure of research productivity and impact." .
+
+akp:institutionName rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Institution ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "institution name" ;
+    rdfs:comment "The full official name of the institution." .
+
+akp:country rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Institution ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "country" ;
+    rdfs:comment "The country in which the institution is located." .
+
+akp:venueName rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Venue ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "venue name" ;
+    rdfs:comment "The full name of the publication venue (journal or conference)." .
+
+akp:impactFactor rdf:type owl:DatatypeProperty ;
+    rdfs:domain akp:Journal ;
+    rdfs:range  xsd:decimal ;
+    rdfs:label  "impact factor" ;
+    rdfs:comment "The Journal Impact Factor (JIF), a metric reflecting the yearly average number of citations for articles published in the journal." .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ABox — Instances
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Institutions ─────────────────────────────────────────────────────────────
+akp:inst_mit rdf:type akp:Institution ;
+    akp:institutionName "Massachusetts Institute of Technology" ;
+    akp:country "USA" .
+
+akp:inst_stanford rdf:type akp:Institution ;
+    akp:institutionName "Stanford University" ;
+    akp:country "USA" .
+
+akp:inst_cambridge rdf:type akp:Institution ;
+    akp:institutionName "University of Cambridge" ;
+    akp:country "UK" .
+
+akp:inst_metu rdf:type akp:Institution ;
+    akp:institutionName "Middle East Technical University" ;
+    akp:country "Turkey" .
+
+# ── Research Fields ──────────────────────────────────────────────────────────
+akp:field_ml rdf:type akp:ResearchField ;
+    rdfs:label "Machine Learning" .
+
+akp:field_nlp rdf:type akp:ResearchField ;
+    rdfs:label "Natural Language Processing" .
+
+akp:field_kg rdf:type akp:ResearchField ;
+    rdfs:label "Knowledge Graphs" .
+
+akp:field_cv rdf:type akp:ResearchField ;
+    rdfs:label "Computer Vision" .
+
+# ── Journals ─────────────────────────────────────────────────────────────────
+akp:journal_nature rdf:type akp:Journal ;
+    akp:venueName "Nature" ;
+    akp:impactFactor 49.962 .
+
+akp:journal_science rdf:type akp:Journal ;
+    akp:venueName "Science" ;
+    akp:impactFactor 47.728 .
+
+akp:journal_jair rdf:type akp:Journal ;
+    akp:venueName "Journal of Artificial Intelligence Research" ;
+    akp:impactFactor 4.676 .
+
+# ── Conferences ──────────────────────────────────────────────────────────────
+akp:conf_neurips rdf:type akp:Conference ;
+    akp:venueName "NeurIPS" .
+
+akp:conf_iclr rdf:type akp:Conference ;
+    akp:venueName "ICLR" .
+
+akp:conf_acl rdf:type akp:Conference ;
+    akp:venueName "ACL" .
+
+akp:conf_aaai rdf:type akp:Conference ;
+    akp:venueName "AAAI" .
+
+# ── Keywords ─────────────────────────────────────────────────────────────────
+akp:kw_transformer rdf:type akp:Keyword ; rdfs:label "Transformer" .
+akp:kw_attention   rdf:type akp:Keyword ; rdfs:label "Attention Mechanism" .
+akp:kw_bert        rdf:type akp:Keyword ; rdfs:label "BERT" .
+akp:kw_gnn         rdf:type akp:Keyword ; rdfs:label "Graph Neural Networks" .
+akp:kw_rl          rdf:type akp:Keyword ; rdfs:label "Reinforcement Learning" .
+akp:kw_llm         rdf:type akp:Keyword ; rdfs:label "Large Language Models" .
+akp:kw_ontology    rdf:type akp:Keyword ; rdfs:label "Ontology" .
+akp:kw_sparql      rdf:type akp:Keyword ; rdfs:label "SPARQL" .
+akp:kw_gru         rdf:type akp:Keyword ; rdfs:label "GRU-RNN" .         # [v2] new
+akp:kw_seq2seq     rdf:type akp:Keyword ; rdfs:label "Seq2Seq" .         # [v2] new
+
+# ── Authors ──────────────────────────────────────────────────────────────────
+akp:author_vaswani rdf:type akp:Author ;
+    akp:name "Ashish Vaswani" ;
+    akp:orcid "0000-0001-9987-0001" ;
+    akp:hIndex 25 ;
+    akp:affiliatedWith akp:inst_mit .
+
+akp:author_devlin rdf:type akp:Author ;
+    akp:name "Jacob Devlin" ;
+    akp:orcid "0000-0001-9987-0002" ;
+    akp:hIndex 20 ;
+    akp:affiliatedWith akp:inst_stanford .
+
+akp:author_lecun rdf:type akp:Author ;
+    akp:name "Yann LeCun" ;
+    akp:orcid "0000-0001-9987-0003" ;
+    akp:hIndex 90 ;
+    akp:affiliatedWith akp:inst_stanford .
+
+akp:author_bengio rdf:type akp:Author ;
+    akp:name "Yoshua Bengio" ;
+    akp:orcid "0000-0001-9987-0004" ;
+    akp:hIndex 112 ;
+    akp:affiliatedWith akp:inst_cambridge .
+
+akp:author_hinton rdf:type akp:Author ;
+    akp:name "Geoffrey Hinton" ;
+    akp:orcid "0000-0001-9987-0005" ;
+    akp:hIndex 138 ;
+    akp:affiliatedWith akp:inst_cambridge .
+
+akp:author_kipf rdf:type akp:Author ;
+    akp:name "Thomas Kipf" ;
+    akp:orcid "0000-0001-9987-0006" ;
+    akp:hIndex 18 ;
+    akp:affiliatedWith akp:inst_mit .
+
+akp:author_mikolov rdf:type akp:Author ;
+    akp:name "Tomas Mikolov" ;
+    akp:orcid "0000-0001-9987-0007" ;
+    akp:hIndex 30 ;
+    akp:affiliatedWith akp:inst_stanford .
+
+akp:author_goodfellow rdf:type akp:Author ;
+    akp:name "Ian Goodfellow" ;
+    akp:orcid "0000-0001-9987-0008" ;
+    akp:hIndex 55 ;
+    akp:affiliatedWith akp:inst_stanford .
+
+# ── Collaborations (symmetric — reasoner infers both directions) ─────────────
+akp:author_vaswani   akp:collaboratesWith akp:author_devlin .
+akp:author_lecun     akp:collaboratesWith akp:author_bengio .
+akp:author_bengio    akp:collaboratesWith akp:author_hinton .
+akp:author_goodfellow akp:collaboratesWith akp:author_bengio .
+
+# ── Publications ─────────────────────────────────────────────────────────────
+
+akp:paper_attention rdf:type akp:ConferencePaper ;
+    akp:title         "Attention Is All You Need" ;
+    akp:year          2017 ;
+    akp:doi           "10.48550/arXiv.1706.03762" ;
+    akp:abstract      "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely." ;
+    akp:citationCount 90000 ;
+    akp:hasAuthor     akp:author_vaswani ;
+    akp:publishedIn   akp:conf_neurips ;
+    akp:hasKeyword    akp:kw_transformer ;
+    akp:hasKeyword    akp:kw_attention ;
+    akp:belongsToField akp:field_nlp .
+
+akp:paper_bert rdf:type akp:ConferencePaper ;
+    akp:title         "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" ;
+    akp:year          2019 ;
+    akp:doi           "10.48550/arXiv.1810.04805" ;
+    akp:abstract      "We introduce BERT, a new language representation model designed to pre-train deep bidirectional representations from unlabeled text." ;
+    akp:citationCount 55000 ;
+    akp:hasAuthor     akp:author_devlin ;
+    akp:publishedIn   akp:conf_acl ;
+    akp:hasKeyword    akp:kw_bert ;
+    akp:hasKeyword    akp:kw_transformer ;
+    akp:belongsToField akp:field_nlp ;
+    akp:cites         akp:paper_attention .
+
+akp:paper_gcn rdf:type akp:ConferencePaper ;
+    akp:title         "Semi-Supervised Classification with Graph Convolutional Networks" ;
+    akp:year          2017 ;
+    akp:doi           "10.48550/arXiv.1609.02907" ;
+    akp:abstract      "We present a scalable approach for semi-supervised classification of nodes in a graph using an efficient variant of convolutional neural networks." ;
+    akp:citationCount 25000 ;
+    akp:hasAuthor     akp:author_kipf ;
+    akp:publishedIn   akp:conf_iclr ;
+    akp:hasKeyword    akp:kw_gnn ;
+    akp:belongsToField akp:field_ml .
+
+akp:paper_word2vec rdf:type akp:ConferencePaper ;
+    akp:title         "Distributed Representations of Words and Phrases and their Compositionality" ;
+    akp:year          2013 ;
+    akp:doi           "10.48550/arXiv.1310.4546" ;
+    akp:abstract      "We present several extensions of the original word2vec model including techniques for learning representations of phrases." ;
+    akp:citationCount 18000 ;
+    akp:hasAuthor     akp:author_mikolov ;
+    akp:publishedIn   akp:conf_neurips ;
+    akp:hasKeyword    akp:kw_llm ;
+    akp:belongsToField akp:field_nlp .
+
+akp:paper_gans rdf:type akp:ConferencePaper ;
+    akp:title         "Generative Adversarial Networks" ;
+    akp:year          2014 ;
+    akp:doi           "10.48550/arXiv.1406.2661" ;
+    akp:abstract      "We propose a new framework for estimating generative models via an adversarial process in which two models are simultaneously trained." ;
+    akp:citationCount 40000 ;
+    akp:hasAuthor     akp:author_goodfellow ;
+    akp:hasAuthor     akp:author_bengio ;
+    akp:publishedIn   akp:conf_neurips ;
+    akp:hasKeyword    akp:kw_rl ;
+    akp:belongsToField akp:field_ml .
+
+akp:paper_deeplearning rdf:type akp:JournalArticle ;
+    akp:title         "Deep Learning" ;
+    akp:year          2015 ;
+    akp:doi           "10.1038/nature14539" ;
+    akp:abstract      "Deep learning allows computational models composed of multiple processing layers to learn representations of data with multiple levels of abstraction." ;
+    akp:citationCount 65000 ;
+    akp:hasAuthor     akp:author_lecun ;
+    akp:hasAuthor     akp:author_bengio ;
+    akp:hasAuthor     akp:author_hinton ;
+    akp:publishedIn   akp:journal_nature ;
+    akp:hasKeyword    akp:kw_llm ;
+    akp:belongsToField akp:field_ml .
+
+akp:paper_kg_embed rdf:type akp:JournalArticle ;
+    akp:title         "Knowledge Graph Embedding: A Survey of Approaches and Applications" ;
+    akp:year          2017 ;
+    akp:doi           "10.1109/TKDE.2017.2754499" ;
+    akp:abstract      "This paper reviews knowledge graph embedding methods, which project entities and relations into continuous vector spaces for downstream tasks." ;
+    akp:citationCount 5000 ;
+    akp:hasAuthor     akp:author_hinton ;
+    akp:publishedIn   akp:journal_jair ;
+    akp:hasKeyword    akp:kw_ontology ;
+    akp:hasKeyword    akp:kw_sparql ;
+    akp:belongsToField akp:field_kg ;
+    akp:cites         akp:paper_gcn .
+
+akp:paper_llm_survey rdf:type akp:JournalArticle ;
+    akp:title         "A Survey of Large Language Models" ;
+    akp:year          2023 ;
+    akp:doi           "10.48550/arXiv.2303.18223" ;
+    akp:abstract      "This paper reviews the recent advances of large language models, including pre-training, instruction tuning, alignment, and evaluation." ;
+    akp:citationCount 8000 ;
+    akp:hasAuthor     akp:author_bengio ;
+    akp:publishedIn   akp:journal_jair ;
+    akp:hasKeyword    akp:kw_llm ;
+    akp:hasKeyword    akp:kw_transformer ;
+    akp:belongsToField akp:field_nlp ;
+    akp:cites         akp:paper_attention ;
+    akp:cites         akp:paper_bert .       # [v2] new citation edge
