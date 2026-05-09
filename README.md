@@ -27,6 +27,12 @@ Domain & Scope
 - Reviewer identities
 
 ---
+**Changes in Version 2:**
+
+ontology_akpkg_v2.ttl : Extended ontology with abstract property, symmetric collaboratesWith, foaf alignment
+kg_construction_v2.py : Updated SPARQL queries to include abstract-based keyword search
+llm_integration_v2.py : Updated system prompt with Phase 2 ontology schema
+---
 
  Repository Structure
 
@@ -37,13 +43,15 @@ academic-publication-kg/
 │
 ├── ontology/
 │   └── ontology_akpkg.ttl      # OWL 2 ontology in Turtle format (TBox + ABox)
-│
+│   └── ontology_akpkg_v2.ttl   # v2: Updated ontology with extended classes
 ├── docs/
-│   └── ORSD_Doldurulmus.docx   # Ontology Requirements Specification Document (draft)
+│   └── orsd-template-220316009.docx   # Ontology Requirements Specification Document (draft)
 │
 └── src/
-    ├── kg_construction.py      # RDFlib-based knowledge graph construction & SPARQL queries
-    └── llm_integration.py      # LLM (Claude API) natural language to SPARQL pipeline
+    ├── kg_construction.py      # RDFlib-based knowledge graph construction & SPARQL queries  
+    ├── kg_construction_v2.py   # Improved construction & queries
+    ├── llm_integration.py      # LLM (Claude API) natural language to SPARQL pipeline
+    └── llm_integration_v2.py   # Optimized NL-to-SPARQL pipeline
 ```
 
 ---
@@ -142,10 +150,10 @@ python kg_construction.py
 This will load `ontology/ontology_akpkg.ttl`, execute all 10 SPARQL queries, and print results to the console.
 
 Run the LLM Integration
-
+Run the Latest Version (v2)
 ```bash
 cd src/
-python llm_integration.py
+python llm_integration_v2.py
 ```
 
 > **Note:** Requires an Anthropic API key set in your environment.
@@ -158,6 +166,7 @@ Current Status
 - [x] ORSD specification document drafted
 - [x] Initial OWL 2 ontology developed (11 classes, 7 object properties, 10 data properties)
 - [x] ABox populated with 8 publications, 8 authors, 4 institutions, 7 venues
+- [x] v2 Update: Ontology and python scripts updated with new features.
 - [x] 10 SPARQL queries implemented and tested
 - [x] SHACL validation shapes defined (5 shapes)
 - [x] LLM integration module drafted
