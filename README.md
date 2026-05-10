@@ -45,8 +45,10 @@ academic-publication-kg/
 │   └── ontology_akpkg.ttl      # OWL 2 ontology in Turtle format (TBox + ABox)
 │   └── ontology_akpkg_v2.ttl   # v2: Updated ontology with extended classes
 ├── docs/
-│   └── orsd-template-220316009.docx   # Ontology Requirements Specification Document (draft)
-│
+│   ├── orsd-template-220316009.docx      # Ontology Requirements Specification Document (draft)
+    ├── orsd-template-220316009_v2.docx   # version 2
+    └── widoco/
+      └── widoco_documentation.html
 └── src/
     ├── kg_construction.py      # RDFlib-based knowledge graph construction & SPARQL queries  
     ├── kg_construction_v2.py   # Improved construction & queries
@@ -163,7 +165,7 @@ python llm_integration_v2.py
 Current Status
 
 - [x] Domain selected: Academic Publication Knowledge Graph
-- [x] ORSD specification document drafted
+- [x] ORSD specification document drafted (updated with version 2)
 - [x] Initial OWL 2 ontology developed (11 classes, 7 object properties, 10 data properties)
 - [x] ABox populated with 8 publications, 8 authors, 4 institutions, 7 venues
 - [x] v2 Update: Ontology and python scripts updated with new features.
