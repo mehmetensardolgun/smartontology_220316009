@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Academic Publication Knowledge Graph Ontology — Documentation</title>
+  <style>
+    :root {
+      --primary: #1F3864;
+      --secondary: #2E5FA3;
+      --accent: #2E75B6;
+      --light-bg: #EEF4FB;
+      --border: #C5D8F0;
+      --code-bg: #F4F6F9;
+      --text: #222;
+      --muted: #555;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: var(--text); background: #fff; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #fff; padding: 40px 60px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 6px; }
+    header .meta { font-size: 0.9rem; opacity: 0.85; line-height: 1.8; }
+    header .badge {
+      display: inline-block; background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px; padding: 2px 10px; font-size: 0.8rem; margin-right: 6px;
+    }
+
+    /* ── Layout ── */
+    .container { display: flex; min-height: calc(100vh - 160px); }
+    nav {
+      width: 240px; flex-shrink: 0;
+      background: var(--light-bg); border-right: 1px solid var(--border);
+      padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    nav h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--muted); padding: 0 20px 8px; margin-top: 20px; }
+    nav a {
+      display: block; padding: 7px 20px; color: var(--secondary);
+      text-decoration: none; font-size: 0.88rem; border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    nav a:hover, nav a.active { background: #fff; border-left-color: var(--accent); color: var(--primary); font-weight: 600; }
+    main { flex: 1; padding: 40px 60px; max-width: 960px; }
+
+    /* ── Sections ── */
+    section { margin-bottom: 52px; }
+    h2 { font-size: 1.5rem; color: var(--primary); border-bottom: 3px solid var(--secondary);
+      padding-bottom: 8px; margin-bottom: 20px; }
+    h3 { font-size: 1.1rem; color: var(--secondary); margin: 28px 0 10px; }
+    h4 { font-size: 0.95rem; color: var(--accent); margin: 16px 0 6px; }
+    p { line-height: 1.75; margin-bottom: 12px; color: #333; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+    thead tr { background: var(--secondary); color: #fff; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    tr:nth-child(even) td { background: var(--light-bg); }
+    tr:hover td { background: #dceaf8; }
+
+    /* ── Cards ── */
+    .card {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px 24px; margin: 16px 0;
+      border-left: 5px solid var(--accent);
+    }
+    .card.green  { border-left-color: #27ae60; }
+    .card.orange { border-left-color: #e67e22; }
+    .card.purple { border-left-color: #8e44ad; }
+    .card-title { font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 1rem; }
+    .card p { margin: 0; font-size: 0.88rem; }
+
+    /* ── Code ── */
+    pre {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px; padding: 16px 20px;
+      font-size: 0.82rem; overflow-x: auto; line-height: 1.6;
+      font-family: 'Courier New', monospace; margin: 14px 0;
+    }
+    code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
+      font-family: 'Courier New', monospace; font-size: 0.85em; }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block; font-size: 0.75rem; padding: 2px 8px;
+      border-radius: 12px; margin: 2px; font-weight: 600;
+    }
+    .tag-class    { background: #dbeafe; color: #1e40af; }
+    .tag-obj      { background: #d1fae5; color: #065f46; }
+    .tag-data     { background: #fef3c7; color: #92400e; }
+    .tag-sym      { background: #ede9fe; color: #5b21b6; }
+    .tag-v2       { background: #fee2e2; color: #991b1b; }
+
+    /* ── Stats bar ── */
+    .stats { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+    .stat-box {
+      flex: 1; min-width: 120px; background: var(--light-bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; text-align: center;
+    }
+    .stat-box .num { font-size: 2rem; font-weight: 700; color: var(--secondary); }
+    .stat-box .lbl { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── Footer ── */
+    footer { background: var(--primary); color: rgba(255,255,255,0.75);
+      text-align: center; padding: 20px; font-size: 0.82rem; }
+    footer a { color: #90b8e8; }
+
+    /* ── Hierarchy tree ── */
+    .tree { font-family: 'Courier New', monospace; font-size: 0.85rem;
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px 20px; line-height: 2; }
+    .tree .cls { color: var(--secondary); font-weight: 700; }
+    .tree .sub { color: var(--accent); }
+
+    @media(max-width:768px){
+      nav { display: none; }
+      main { padding: 24px 20px; }
+      header { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
+<header>
+  <h1>Academic Publication Knowledge Graph Ontology</h1>
+  <div class="meta">
+    <span class="badge">OWL 2 DL</span>
+    <span class="badge">Version 2.0</span>
+    <span class="badge">Turtle / TTL</span>
+    <span class="badge">SHACL Validated</span>
+    <br/><br/>
+    <strong>Namespace:</strong> <code style="background:rgba(255,255,255,0.15);color:#fff">http://www.akpkg.org/ontology#</code><br/>
+    <strong>Prefix:</strong> <code style="background:rgba(255,255,255,0.15);color:#fff">akp:</code><br/>
+    <strong>Created:</strong> 25 April 2026 &nbsp;|&nbsp; <strong>Modified:</strong> 09 May 2026<br/>
+    <strong>Generated by:</strong> Widoco v1.4.x &nbsp;|&nbsp;
+    <strong>Course:</strong> Knowledge Engineering and Ontologies — Project 7
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ══ NAV ════════════════════════════════════════════════════════════════ -->
+<nav>
+  <h3>Contents</h3>
+  <a href="#overview">Overview</a>
+  <a href="#statistics">Statistics</a>
+  <a href="#hierarchy">Class Hierarchy</a>
+  <h3>Classes</h3>
+  <a href="#Publication">Publication</a>
+  <a href="#Paper">Paper</a>
+  <a href="#JournalArticle">JournalArticle</a>
+  <a href="#ConferencePaper">ConferencePaper</a>
+  <a href="#Author">Author</a>
+  <a href="#Institution">Institution</a>
+  <a href="#Venue">Venue</a>
+  <a href="#Journal">Journal</a>
+  <a href="#Conference">Conference</a>
+  <a href="#ResearchField">ResearchField</a>
+  <a href="#Keyword">Keyword</a>
+  <h3>Properties</h3>
+  <a href="#obj-props">Object Properties</a>
+  <a href="#data-props">Data Properties</a>
+  <h3>Instances</h3>
+  <a href="#abox">ABox Summary</a>
+  <h3>Queries</h3>
+  <a href="#sparql">SPARQL Examples</a>
+  <h3>Validation</h3>
+  <a href="#shacl">SHACL Shapes</a>
+  <a href="#changelog">Changelog</a>
+</nav>
+
+<!-- ══ MAIN ═══════════════════════════════════════════════════════════════ -->
+<main>
+
+  <!-- Overview -->
+  <section id="overview">
+    <h2>Overview</h2>
+    <p>
+      The <strong>Academic Publication Knowledge Graph (AKPKG)</strong> ontology is an OWL 2 DL
+      ontology for modeling scholarly publications, authors, research institutions, citation networks,
+      research fields, and thematic keywords. It enables semantic search, citation-network analysis,
+      and structured knowledge retrieval beyond the capabilities of traditional bibliographic databases.
+    </p>
+    <p>
+      The ontology also serves as the backbone for an LLM-based Natural Language to SPARQL module
+      that translates free-text questions into structured queries using the ontology schema as grounding context.
+      <span class="tag tag-v2">v2</span> Version 2.0 adds abstract-level keyword extraction,
+      FOAF and SKOS alignments, and full Widoco-compatible annotation coverage.
+    </p>
+
+    <h3>Prefixes Used</h3>
+    <pre>@prefix akp:     &lt;http://www.akpkg.org/ontology#&gt; .
+@prefix owl:     &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix foaf:    &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix skos:    &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .</pre>
+  </section>
+
+  <!-- Statistics -->
+  <section id="statistics">
+    <h2>Statistics</h2>
+    <div class="stats">
+      <div class="stat-box"><div class="num">335</div><div class="lbl">Total Triples</div></div>
+      <div class="stat-box"><div class="num">11</div><div class="lbl">OWL Classes</div></div>
+      <div class="stat-box"><div class="num">7</div><div class="lbl">Object Properties</div></div>
+      <div class="stat-box"><div class="num">12</div><div class="lbl">Data Properties</div></div>
+      <div class="stat-box"><div class="num">8</div><div class="lbl">Publications</div></div>
+      <div class="stat-box"><div class="num">8</div><div class="lbl">Authors</div></div>
+      <div class="stat-box"><div class="num">4</div><div class="lbl">Institutions</div></div>
+      <div class="stat-box"><div class="num">12</div><div class="lbl">CQs Covered</div></div>
+    </div>
+  </section>
+
+  <!-- Hierarchy -->
+  <section id="hierarchy">
+    <h2>Class Hierarchy</h2>
+    <div class="tree">
+      <span class="cls">owl:Thing</span><br/>
+      &nbsp;&nbsp;├── <span class="cls">akp:Publication</span><br/>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="sub">akp:Paper</span><br/>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="sub">akp:JournalArticle</span><br/>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="sub">akp:ConferencePaper</span><br/>
+      &nbsp;&nbsp;├── <span class="cls">akp:Author</span> <em style="color:#888;font-size:0.8em">(≡ foaf:Person)</em><br/>
+      &nbsp;&nbsp;├── <span class="cls">akp:Institution</span><br/>
+      &nbsp;&nbsp;├── <span class="cls">akp:Venue</span><br/>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="sub">akp:Journal</span><br/>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="sub">akp:Conference</span><br/>
+      &nbsp;&nbsp;├── <span class="cls">akp:ResearchField</span><br/>
+      &nbsp;&nbsp;└── <span class="cls">akp:Keyword</span> <em style="color:#888;font-size:0.8em">(≡ skos:Concept)</em>
+    </div>
+  </section>
+
+  <!-- Classes -->
+  <section id="classes">
+    <h2>Classes</h2>
+
+    <div class="card" id="Publication">
+      <div class="card-title">akp:Publication <span class="tag tag-class">Class</span></div>
+      <p><strong>URI:</strong> <code>http://www.akpkg.org/ontology#Publication</code></p>
+      <p><strong>Description:</strong> An academic publication of any type (journal article, conference paper, etc.).</p>
+      <p><strong>Subclasses:</strong> <code>akp:Paper</code></p>
+      <p><strong>Data Properties:</strong> title, year, doi, abstract, citationCount</p>
+    </div>
+
+    <div class="card" id="Paper">
+      <div class="card-title">akp:Paper <span class="tag tag-class">Class</span></div>
+      <p><strong>SubClass Of:</strong> <code>akp:Publication</code></p>
+      <p><strong>Description:</strong> A standalone research paper that can be published in a journal or presented at a conference.</p>
+      <p><strong>Subclasses:</strong> <code>akp:JournalArticle</code>, <code>akp:ConferencePaper</code></p>
+    </div>
+
+    <div class="card" id="JournalArticle">
+      <div class="card-title">akp:JournalArticle <span class="tag tag-class">Class</span></div>
+      <p><strong>SubClass Of:</strong> <code>akp:Paper</code></p>
+      <p><strong>Description:</strong> A peer-reviewed paper published in an academic journal.</p>
+      <p><strong>ABox instances:</strong> paper_deeplearning, paper_kg_embed, paper_llm_survey</p>
+    </div>
+
+    <div class="card" id="ConferencePaper">
+      <div class="card-title">akp:ConferencePaper <span class="tag tag-class">Class</span></div>
+      <p><strong>SubClass Of:</strong> <code>akp:Paper</code></p>
+      <p><strong>Description:</strong> A paper presented and published in the proceedings of an academic conference.</p>
+      <p><strong>ABox instances:</strong> paper_attention, paper_bert, paper_gcn, paper_word2vec, paper_gans</p>
+    </div>
+
+    <div class="card" id="Author">
+      <div class="card-title">akp:Author <span class="tag tag-class">Class</span> <span class="tag tag-v2">v2: ≡ foaf:Person</span></div>
+      <p><strong>Description:</strong> A researcher or scholar who has authored one or more academic publications.</p>
+      <p><strong>Equivalent Class:</strong> <code>foaf:Person</code> (for interoperability)</p>
+      <p><strong>Data Properties:</strong> name, orcid, hIndex</p>
+      <p><strong>ABox instances:</strong> author_vaswani, author_devlin, author_lecun, author_bengio, author_hinton, author_kipf, author_mikolov, author_goodfellow</p>
+    </div>
+
+    <div class="card" id="Institution">
+      <div class="card-title">akp:Institution <span class="tag tag-class">Class</span></div>
+      <p><strong>Description:</strong> A university, research laboratory, or other organization with which an author is affiliated.</p>
+      <p><strong>Data Properties:</strong> institutionName, country</p>
+      <p><strong>ABox instances:</strong> inst_mit, inst_stanford, inst_cambridge, inst_metu</p>
+    </div>
+
+    <div class="card" id="Venue">
+      <div class="card-title">akp:Venue <span class="tag tag-class">Class</span></div>
+      <p><strong>Description:</strong> An abstract publication outlet. Specialized into Journal and Conference.</p>
+      <p><strong>Subclasses:</strong> <code>akp:Journal</code>, <code>akp:Conference</code></p>
+      <p><strong>Data Properties:</strong> venueName</p>
+    </div>
+
+    <div class="card" id="Journal">
+      <div class="card-title">akp:Journal <span class="tag tag-class">Class</span></div>
+      <p><strong>SubClass Of:</strong> <code>akp:Venue</code></p>
+      <p><strong>Description:</strong> A peer-reviewed periodic academic publication with an associated impact factor.</p>
+      <p><strong>Data Properties:</strong> venueName, impactFactor</p>
+      <p><strong>ABox instances:</strong> journal_nature (IF=49.96), journal_science (IF=47.73), journal_jair (IF=4.68)</p>
+    </div>
+
+    <div class="card" id="Conference">
+      <div class="card-title">akp:Conference <span class="tag tag-class">Class</span></div>
+      <p><strong>SubClass Of:</strong> <code>akp:Venue</code></p>
+      <p><strong>Description:</strong> An academic conference or workshop at which research papers are presented.</p>
+      <p><strong>ABox instances:</strong> conf_neurips, conf_iclr, conf_acl, conf_aaai</p>
+    </div>
+
+    <div class="card" id="ResearchField">
+      <div class="card-title">akp:ResearchField <span class="tag tag-class">Class</span></div>
+      <p><strong>Description:</strong> A broad scientific or engineering research domain.</p>
+      <p><strong>ABox instances:</strong> field_ml (Machine Learning), field_nlp (Natural Language Processing), field_kg (Knowledge Graphs), field_cv (Computer Vision)</p>
+    </div>
+
+    <div class="card" id="Keyword">
+      <div class="card-title">akp:Keyword <span class="tag tag-class">Class</span> <span class="tag tag-v2">v2: ≡ skos:Concept</span></div>
+      <p><strong>Description:</strong> A thematic descriptor assigned to a publication. Aligned with <code>skos:Concept</code> to support future hierarchical keyword taxonomies.</p>
+      <p><strong>ABox instances:</strong> kw_transformer, kw_attention, kw_bert, kw_gnn, kw_rl, kw_llm, kw_ontology, kw_sparql, kw_gru <span class="tag tag-v2">v2</span>, kw_seq2seq <span class="tag tag-v2">v2</span></p>
+    </div>
+  </section>
+
+  <!-- Object Properties -->
+  <section id="obj-props">
+    <h2>Object Properties</h2>
+    <table>
+      <thead><tr><th>Property</th><th>Domain</th><th>Range</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>akp:hasAuthor</code></td><td>Publication</td><td>Author</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Links a publication to one or more of its authors.</td></tr>
+        <tr><td><code>akp:affiliatedWith</code></td><td>Author</td><td>Institution</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Indicates the institution with which an author is affiliated.</td></tr>
+        <tr><td><code>akp:publishedIn</code></td><td>Publication</td><td>Venue</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Specifies the venue in which a publication appeared.</td></tr>
+        <tr><td><code>akp:cites</code></td><td>Publication</td><td>Publication</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Direct citation relationship between publications.</td></tr>
+        <tr><td><code>akp:hasKeyword</code></td><td>Publication</td><td>Keyword</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Associates a publication with thematic keywords.</td></tr>
+        <tr><td><code>akp:belongsToField</code></td><td>Publication</td><td>ResearchField</td><td><span class="tag tag-obj">ObjectProperty</span></td><td>Indicates the broad research domain of a publication.</td></tr>
+        <tr><td><code>akp:collaboratesWith</code></td><td>Author</td><td>Author</td><td><span class="tag tag-sym">SymmetricProperty</span></td><td>Co-authorship relation. Asserted in one direction; reasoner infers both.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Data Properties -->
+  <section id="data-props">
+    <h2>Data Properties</h2>
+    <table>
+      <thead><tr><th>Property</th><th>Domain</th><th>Range</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>akp:title</code></td><td>Publication</td><td>xsd:string</td><td>Full title of the publication.</td></tr>
+        <tr><td><code>akp:year</code></td><td>Publication</td><td>xsd:integer</td><td>Calendar year of publication.</td></tr>
+        <tr><td><code>akp:doi</code></td><td>Publication</td><td>xsd:string</td><td>Digital Object Identifier (format: 10.XXXX/suffix).</td></tr>
+        <tr><td><code>akp:abstract</code> <span class="tag tag-v2">v2</span></td><td>Publication</td><td>xsd:string</td><td>Abstract text. Used for keyword extraction and semantic search.</td></tr>
+        <tr><td><code>akp:citationCount</code></td><td>Publication</td><td>xsd:integer</td><td>Number of citations (Semantic Scholar snapshot: 2024-01-01).</td></tr>
+        <tr><td><code>akp:name</code></td><td>Author</td><td>xsd:string</td><td>Full canonical author name.</td></tr>
+        <tr><td><code>akp:orcid</code></td><td>Author</td><td>xsd:string</td><td>ORCID identifier (XXXX-XXXX-XXXX-XXXX).</td></tr>
+        <tr><td><code>akp:hIndex</code></td><td>Author</td><td>xsd:integer</td><td>Hirsch index of the author.</td></tr>
+        <tr><td><code>akp:institutionName</code></td><td>Institution</td><td>xsd:string</td><td>Official name of the institution.</td></tr>
+        <tr><td><code>akp:country</code></td><td>Institution</td><td>xsd:string</td><td>Country of the institution.</td></tr>
+        <tr><td><code>akp:venueName</code></td><td>Venue</td><td>xsd:string</td><td>Full name of the publication venue.</td></tr>
+        <tr><td><code>akp:impactFactor</code></td><td>Journal</td><td>xsd:decimal</td><td>Journal Impact Factor (JIF).</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ABox -->
+  <section id="abox">
+    <h2>ABox — Instance Summary</h2>
+    <table>
+      <thead><tr><th>Instance</th><th>Type</th><th>Key Properties</th></tr></thead>
+      <tbody>
+        <tr><td><code>paper_attention</code></td><td>ConferencePaper</td><td>"Attention Is All You Need", 2017, NeurIPS, 90,000 citations</td></tr>
+        <tr><td><code>paper_bert</code></td><td>ConferencePaper</td><td>"BERT", 2019, ACL, 55,000 citations — cites paper_attention</td></tr>
+        <tr><td><code>paper_gcn</code></td><td>ConferencePaper</td><td>"GCN", 2017, ICLR, 25,000 citations</td></tr>
+        <tr><td><code>paper_word2vec</code></td><td>ConferencePaper</td><td>"Word2Vec", 2013, NeurIPS, 18,000 citations</td></tr>
+        <tr><td><code>paper_gans</code></td><td>ConferencePaper</td><td>"GANs", 2014, NeurIPS, 40,000 citations</td></tr>
+        <tr><td><code>paper_deeplearning</code></td><td>JournalArticle</td><td>"Deep Learning", 2015, Nature, 65,000 citations</td></tr>
+        <tr><td><code>paper_kg_embed</code></td><td>JournalArticle</td><td>"KG Embedding Survey", 2017, JAIR — cites paper_gcn</td></tr>
+        <tr><td><code>paper_llm_survey</code></td><td>JournalArticle</td><td>"LLM Survey", 2023, JAIR — cites paper_attention, paper_bert <span class="tag tag-v2">v2</span></td></tr>
+        <tr><td><code>author_vaswani</code></td><td>Author</td><td>Ashish Vaswani, MIT, h-index=25</td></tr>
+        <tr><td><code>author_bengio</code></td><td>Author</td><td>Yoshua Bengio, Cambridge, h-index=112</td></tr>
+        <tr><td><code>author_hinton</code></td><td>Author</td><td>Geoffrey Hinton, Cambridge, h-index=138</td></tr>
+        <tr><td><code>author_lecun</code></td><td>Author</td><td>Yann LeCun, Stanford, h-index=90</td></tr>
+        <tr><td><code>inst_mit</code></td><td>Institution</td><td>MIT, USA</td></tr>
+        <tr><td><code>inst_stanford</code></td><td>Institution</td><td>Stanford University, USA</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SPARQL -->
+  <section id="sparql">
+    <h2>SPARQL Query Examples</h2>
+
+    <h3>CQ2 — Authors of a given paper</h3>
+    <pre>PREFIX akp: &lt;http://www.akpkg.org/ontology#&gt;
+SELECT ?authorName
+WHERE {
+  ?paper akp:title "Attention Is All You Need" .
+  ?paper akp:hasAuthor ?author .
+  ?author akp:name ?authorName .
+}</pre>
+
+    <h3>CQ4 — Top-5 most cited papers</h3>
+    <pre>PREFIX akp: &lt;http://www.akpkg.org/ontology#&gt;
+SELECT ?title ?citationCount
+WHERE {
+  ?paper akp:title ?title .
+  ?paper akp:citationCount ?citationCount .
+}
+ORDER BY DESC(?citationCount)
+LIMIT 5</pre>
+
+    <h3>CQ6 — Citation network (papers citing a target)</h3>
+    <pre>PREFIX akp: &lt;http://www.akpkg.org/ontology#&gt;
+SELECT ?citingTitle ?year
+WHERE {
+  ?target akp:title "Attention Is All You Need" .
+  ?citing akp:cites ?target .
+  ?citing akp:title ?citingTitle .
+  ?citing akp:year  ?year .
+}
+ORDER BY ?year</pre>
+
+    <h3>CQ11 — Abstract keyword search <span class="tag tag-v2">v2</span></h3>
+    <pre>PREFIX akp: &lt;http://www.akpkg.org/ontology#&gt;
+SELECT ?title ?year
+WHERE {
+  ?paper akp:title    ?title .
+  ?paper akp:year     ?year .
+  ?paper akp:abstract ?abstract .
+  FILTER(CONTAINS(LCASE(?abstract), LCASE("attention")))
+}
+ORDER BY DESC(?year)</pre>
+
+    <h3>CQ12 — Average citations per research field <span class="tag tag-v2">v2</span></h3>
+    <pre>PREFIX akp:  &lt;http://www.akpkg.org/ontology#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+SELECT ?fieldLabel (AVG(?cit) AS ?avgCit) (COUNT(?p) AS ?numPapers)
+WHERE {
+  ?p akp:belongsToField ?field .
+  ?p akp:citationCount  ?cit .
+  ?field rdfs:label ?fieldLabel .
+}
+GROUP BY ?fieldLabel
+ORDER BY DESC(?avgCit)</pre>
+  </section>
+
+  <!-- SHACL -->
+  <section id="shacl">
+    <h2>SHACL Validation Shapes</h2>
+    <table>
+      <thead><tr><th>Shape</th><th>Target Class</th><th>Constraints</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>PublicationShape</td><td>akp:Publication</td><td>title (1..1, minLen=3), year (1900–2025), hasAuthor (min 1), citationCount (≥0)</td><td>✅ 8/8 pass</td></tr>
+        <tr><td>AuthorShape</td><td>akp:Author</td><td>name (1..1), orcid (pattern XXXX-XXXX-XXXX-XXXX), hIndex (≥0)</td><td>✅ 8/8 pass</td></tr>
+        <tr><td>InstitutionShape</td><td>akp:Institution</td><td>institutionName (1..1), country (1..1)</td><td>✅ 4/4 pass</td></tr>
+        <tr><td>JournalShape</td><td>akp:Journal</td><td>impactFactor (decimal ≥0, min 1)</td><td>✅ 3/3 pass</td></tr>
+        <tr><td>DOIShape</td><td>akp:Publication</td><td>doi matches pattern ^10\.[0-9]{4,}/</td><td>✅ 8/8 pass</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Changelog -->
+  <section id="changelog">
+    <h2>Changelog</h2>
+
+    <h3>Version 2.0 — 09 May 2026</h3>
+    <div class="card green">
+      <div class="card-title">TBox Changes</div>
+      <p>
+        • <code>akp:Author owl:equivalentClass foaf:Person</code> — FOAF interoperability alignment<br/>
+        • <code>akp:Keyword owl:equivalentClass skos:Concept</code> — SKOS alignment for future taxonomy support<br/>
+        • <code>akp:abstract</code> data property formally documented with rdfs:comment<br/>
+        • <code>akp:collaboratesWith</code> owl:SymmetricProperty explicitly declared<br/>
+        • <code>rdfs:comment</code> added to ALL 7 object properties (Widoco requirement)<br/>
+        • <code>dcterms:created</code>, <code>dcterms:modified</code>, <code>dcterms:creator</code> added to ontology header<br/>
+        • New keywords: <code>akp:kw_gru</code> (GRU-RNN), <code>akp:kw_seq2seq</code> (Seq2Seq)
+      </p>
+    </div>
+    <div class="card orange">
+      <div class="card-title">ABox Changes</div>
+      <p>
+        • New citation edge: <code>paper_llm_survey akp:cites paper_bert</code><br/>
+        • All abstract literals expanded with fuller text<br/>
+        • paper_word2vec title corrected to full form
+      </p>
+    </div>
+    <div class="card purple">
+      <div class="card-title">Query Changes</div>
+      <p>
+        • CQ11 added: abstract-text keyword search using CONTAINS + LCASE<br/>
+        • CQ12 added: average citation count per research field
+      </p>
+    </div>
+
+    <h3 style="margin-top:24px">Version 1.0 — 25 April 2026</h3>
+    <p>Initial release. 11 classes, 7 object properties, 10 data properties, 8 publication instances, 10 competency questions.</p>
+  </section>
+
+</main>
+</div>
+
+<footer>
+  Generated with <strong>Widoco</strong> — Wizard for Documenting Ontologies &nbsp;|&nbsp;
+  Ontology IRI: <a href="http://www.akpkg.org/ontology">http://www.akpkg.org/ontology</a> &nbsp;|&nbsp;
+  Knowledge Engineering and Ontologies — 2025–2026
+</footer>
+
+</body>
+</html>
