@@ -1,0 +1,105 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix akp: <http://www.akpkg.org/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ─── Shape 1: Publication must have a title ──────────────────────────────────
+akp:PublicationShape
+    rdf:type sh:NodeShape ;
+    sh:targetClass akp:Publication ;
+    sh:property [
+        sh:path akp:title ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minLength 3 ;
+        sh:message "A publication must have exactly one title with at least 3 characters." ;
+    ] ;
+    sh:property [
+        sh:path akp:year ;
+        sh:datatype xsd:integer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 1900 ;
+        sh:maxInclusive 2025 ;
+        sh:message "A publication must have exactly one year between 1900 and 2025." ;
+    ] ;
+    sh:property [
+        sh:path akp:hasAuthor ;
+        sh:class akp:Author ;
+        sh:minCount 1 ;
+        sh:message "A publication must have at least one author." ;
+    ] ;
+    sh:property [
+        sh:path akp:citationCount ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Citation count must be a non-negative integer." ;
+    ] .
+
+# ─── Shape 2: Author must have a name and ORCID ──────────────────────────────
+akp:AuthorShape
+    rdf:type sh:NodeShape ;
+    sh:targetClass akp:Author ;
+    sh:property [
+        sh:path akp:name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "An author must have exactly one name." ;
+    ] ;
+    sh:property [
+        sh:path akp:orcid ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$" ;
+        sh:message "ORCID must match pattern XXXX-XXXX-XXXX-XXXX." ;
+    ] ;
+    sh:property [
+        sh:path akp:hIndex ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "h-index must be a non-negative integer." ;
+    ] .
+
+# ─── Shape 3: Institution must have a name and country ───────────────────────
+akp:InstitutionShape
+    rdf:type sh:NodeShape ;
+    sh:targetClass akp:Institution ;
+    sh:property [
+        sh:path akp:institutionName ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "An institution must have exactly one name." ;
+    ] ;
+    sh:property [
+        sh:path akp:country ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "An institution must specify exactly one country." ;
+    ] .
+
+# ─── Shape 4: Journal must have an impact factor ─────────────────────────────
+akp:JournalShape
+    rdf:type sh:NodeShape ;
+    sh:targetClass akp:Journal ;
+    sh:property [
+        sh:path akp:impactFactor ;
+        sh:datatype xsd:decimal ;
+        sh:minCount 1 ;
+        sh:minInclusive 0.0 ;
+        sh:message "A journal must have a non-negative impact factor." ;
+    ] .
+
+# ─── Shape 5: DOI format validation ─────────────────────────────────────────
+akp:DOIShape
+    rdf:type sh:NodeShape ;
+    sh:targetClass akp:Publication ;
+    sh:property [
+        sh:path akp:doi ;
+        sh:datatype xsd:string ;
+        sh:pattern "^10\\.[0-9]{4,9}/" ;
+        sh:message "DOI must begin with '10.' followed by a registrant code and suffix." ;
+    ] .
